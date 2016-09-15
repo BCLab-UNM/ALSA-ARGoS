@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.12)
-project(DDSA-ARGoS)
+project(ALSA-ARGoS)
 
 # Use C+11
 if (NOT APPLE)
