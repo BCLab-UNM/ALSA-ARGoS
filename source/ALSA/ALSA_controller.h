@@ -3,6 +3,7 @@
 
 #include <source/Base/BaseController.h>
 #include <source/ALSA/ALSA_loop_functions.h>
+#include "ALSA.h"
 
 using namespace argos;
 using namespace std;
@@ -41,7 +42,7 @@ class ALSA_controller : public BaseController {
         size_t NumberOfSpirals;
 
         /* Robot ALSA state variable */
-        enum ALSA { SEARCHING = 1, RETURN_TO_NEST = 2, RETURN_TO_SEARCH = 3 } ALSA;
+        enum STATE { SEARCHING = 1, RETURN_TO_NEST = 2, RETURN_TO_SEARCH = 3 } STATE;
 
         /* robot internal variables & statistics */
         CRandom::CRNG*      RNG;
@@ -88,6 +89,9 @@ class ALSA_controller : public BaseController {
 
 	string results_path;
 	string results_full_path;
+
+	// The ALSA search pattern generator
+	ALSA alsa;
 };
 
 #endif /* ALSA_CONTROLLER_H */

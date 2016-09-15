@@ -18,7 +18,6 @@ execute_process(
 add_definitions("-DGIT_COMMIT_HASH=\"${GIT_COMMIT_HASH}\"")
 add_definitions("-DGIT_BRANCH=\"${GIT_BRANCH}\"")
 
-
 ###############################################
 # define shared object files
 ###############################################
@@ -31,7 +30,14 @@ add_library(ALSA_loop_functions MODULE ALSA_loop_functions.h
 add_library(ALSA_controller     SHARED ALSA_controller.h
                                       ALSA_controller.cpp
 				      ALSA_loop_functions.h
-                                      ALSA_loop_functions.cpp)
+                                      ALSA_loop_functions.cpp
+				      ALSA.h
+				      ALSA.cpp
+				      TargetDetectionEvent.h
+				      TargetDetectionEvent.cpp
+				      Coordinate.h
+				      Coordinate.cpp
+				      )
 
 ###############################################
 # link shared object files to dependencies

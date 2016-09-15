@@ -7,7 +7,7 @@
 ALSA_controller::ALSA_controller() :
     NumberOfRobots(0),
     NumberOfSpirals(0),
-    ALSA(RETURN_TO_NEST),
+    STATE(RETURN_TO_NEST),
     RNG(NULL),
     ResetReturnPosition(true),
     stopTimeStep(0),
@@ -243,7 +243,7 @@ void ALSA_controller::ControlStep()
 {
 
   // To draw paths
-  if (ALSA == SEARCHING)
+  if (STATE == SEARCHING)
     {
       CVector3 position3d(GetPosition().GetX(), GetPosition().GetY(), 0.00);
       CVector3 target3d(previous_position.GetX(), previous_position.GetY(), 0.00);
@@ -258,86 +258,17 @@ void ALSA_controller::ControlStep()
   previous_position = GetPosition();
 
   /* Continue in a sprial */
-  if( ALSA == SEARCHING )
+  if( STATE == SEARCHING )
     {
-      SetIsHeadingToNest(false);
-      //  argos::LOG << "SEARCHING" << std::endl;
-      SetHoldingFood();
-      if (IsHoldingFood())
-	{
-	  bool cpf = true; 
-	  if (cpf)
-	    {
-	      ReturnPosition = GetPosition();
-	      ReturnPatternPosition = GetTarget();
-	      ALSA = RETURN_TO_NEST;
-	    }
-	  else
-	    {
-	      num_targets_collected++;
-	      loopFunctions->setScore(num_targets_collected);
-	      isHoldingFood = false;
-	    }
-
-	  return;
-	}
-      else
-	{
-	  GetTargets(); /* Initializes targets positions. */
-	}
-    } 
-  else if( ALSA == RETURN_TO_NEST) 
-    {
-      //argos::LOG << "RETURN_TO_NEST" << std::endl;
-      SetIsHeadingToNest(true);
-      // Check if we reached the nest. If so record that we dropped food off and go back to the spiral
-      if((GetPosition() - loopFunctions->NestPosition).SquareLength() < loopFunctions->NestRadiusSquared) 
-	{
-	  ALSA = RETURN_TO_SEARCH;
-	  SetIsHeadingToNest(false);
-	  SetTarget(ReturnPosition);
-
-	  if (isHoldingFood)
-	    {
-	      num_targets_collected++;
-	      loopFunctions->setScore(num_targets_collected);
-	    }
-
-	  isHoldingFood = false;
-
-	  /*
-	  ofstream results_output_stream;
-	  results_output_stream.open(results_full_path, ios::app);
-	  results_output_stream << loopFunctions->getSimTimeInSeconds() << ", " << ++num_targets_collected << ", " << "Col Count" << endl;	    
-	  results_output_stream.close();
-	  */
-	}
-      else
-	{
-	  SetIsHeadingToNest(true);
-	  SetTarget(loopFunctions->NestPosition);
-	}
-    } 
-  else if( ALSA == RETURN_TO_SEARCH ) 
-    {
-      // argos::LOG << "RETURN_TO_SEARCH" << std::endl;
-      SetIsHeadingToNest(false);
       
-
-      //argos::LOG << "Return Position:" << ReturnPosition << endl;
-      //argos::LOG << "Robot position:" << GetPosition() << endl;
-      //argos::LOG << "Target position:" << GetTarget() << endl;
-      //argos::LOG << "Distance:" << (GetPosition() - ReturnPosition).Length() << endl;
-      //argos::LOG << "Distance Tolerance:" << TargetDistanceTolerance << endl;
+    } 
+  else if( STATE == RETURN_TO_NEST) 
+    {
       
-      // Check if we have reached the return position
-      if ( IsAtTarget() )
-	{
-	  //argos::LOG << "RETURN_TO_SEARCH: Pattern Point" << std::endl;
-	  SetIsHeadingToNest(false);
-	  SetTarget(ReturnPatternPosition);
-	  ALSA = SEARCHING;
-	}
+    } 
+  else if( STATE == RETURN_TO_SEARCH ) 
+    {
+      
     } 
   
   Move();

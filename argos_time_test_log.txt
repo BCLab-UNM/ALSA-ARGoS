@@ -10,7 +10,7 @@
 [INFO] Loaded library "/usr/local/Cellar/argos3/3.0.0-beta37/lib/argos3/libargos3plugin_simulator_qtopengl.dylib"
 [INFO] Loaded library "/usr/local/Cellar/argos3/3.0.0-beta37/lib/argos3/libargos3plugin_simulator_spiri.dylib"
 [INFO] Not using threads
-[INFO] Using random seed = 897577
+[INFO] Using random seed = 395666
 [INFO] Using simulation clock tick = 0.03125
 [INFO] Total experiment length in clock ticks = 57600
 [INFO] Loaded library "./build/source/ALSA/libALSA_controller.dylib"
