@@ -23,25 +23,25 @@ add_definitions("-DGIT_BRANCH=\"${GIT_BRANCH}\"")
 # define shared object files
 ###############################################
 
-add_library(DSA_loop_functions MODULE DSA_loop_functions.h
-                                      DSA_loop_functions.cpp
-                                      DSA_qt_user_functions.h
-                                      DSA_qt_user_functions.cpp)
+add_library(ALSA_loop_functions MODULE ALSA_loop_functions.h
+                                      ALSA_loop_functions.cpp
+                                      ALSA_qt_user_functions.h
+                                      ALSA_qt_user_functions.cpp)
 
-add_library(DSA_controller     SHARED DSA_controller.h
-                                      DSA_controller.cpp
-									  DSA_loop_functions.h
-                                      DSA_loop_functions.cpp)
+add_library(ALSA_controller     SHARED ALSA_controller.h
+                                      ALSA_controller.cpp
+				      ALSA_loop_functions.h
+                                      ALSA_loop_functions.cpp)
 
 ###############################################
 # link shared object files to dependencies
 ###############################################
 
-target_link_libraries(DSA_controller
+target_link_libraries(ALSA_controller
 					  BaseController)
 
-target_link_libraries(DSA_loop_functions
-                      DSA_controller
+target_link_libraries(ALSA_loop_functions
+                      ALSA_controller
                       argos3core_simulator
                       argos3plugin_simulator_entities
                       argos3plugin_simulator_footbot

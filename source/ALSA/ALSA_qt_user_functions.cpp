@@ -1,22 +1,22 @@
-#include "DSA_qt_user_functions.h"
+#include "ALSA_qt_user_functions.h"
 
 /*****
  * Constructor: In order for drawing functions in this class to be used by
  * ARGoS it must be registered using the RegisterUserFunction function.
  *****/
-DSA_qt_user_functions::DSA_qt_user_functions() :
-    loopFunctions(dynamic_cast<DSA_loop_functions&>(CSimulator::GetInstance().GetLoopFunctions()))
+ALSA_qt_user_functions::ALSA_qt_user_functions() :
+    loopFunctions(dynamic_cast<ALSA_loop_functions&>(CSimulator::GetInstance().GetLoopFunctions()))
 {
-    RegisterUserFunction<DSA_qt_user_functions, CFootBotEntity>(&DSA_qt_user_functions::DrawOnRobot);
-    RegisterUserFunction<DSA_qt_user_functions, CFloorEntity>(&DSA_qt_user_functions::DrawOnArena);
+    RegisterUserFunction<ALSA_qt_user_functions, CFootBotEntity>(&ALSA_qt_user_functions::DrawOnRobot);
+    RegisterUserFunction<ALSA_qt_user_functions, CFloorEntity>(&ALSA_qt_user_functions::DrawOnArena);
 }
 
 /*****
  *
  *****/
-void DSA_qt_user_functions::DrawOnRobot(CFootBotEntity& entity) {
-    //DSA_controller& c = dynamic_cast<DSA_controller&>(entity.GetControllableEntity().GetController());
-    DSA_controller& c = dynamic_cast<DSA_controller&>(entity.GetControllableEntity().GetController());
+void ALSA_qt_user_functions::DrawOnRobot(CFootBotEntity& entity) {
+    //ALSA_controller& c = dynamic_cast<ALSA_controller&>(entity.GetControllableEntity().GetController());
+    ALSA_controller& c = dynamic_cast<ALSA_controller&>(entity.GetControllableEntity().GetController());
 
     if(c.IsHoldingFood() == true) {
         DrawCylinder(CVector3(0.0, 0.0, 0.3), CQuaternion(), loopFunctions.FoodRadius, 0.025, CColor::BLACK);
@@ -48,17 +48,17 @@ void DSA_qt_user_functions::DrawOnRobot(CFootBotEntity& entity) {
 /*****
  *
  *****/
-void DSA_qt_user_functions::DrawOnArena(CFloorEntity& entity) {
+void ALSA_qt_user_functions::DrawOnArena(CFloorEntity& entity) {
     DrawFood();
     DrawNest();
     DrawTargetRays();
 }
 
 /*****
- * This function is called by the DrawOnArena(...) function. If the DSA_data
+ * This function is called by the DrawOnArena(...) function. If the ALSA_data
  * object is not initialized this function should not be called.
  *****/
-void DSA_qt_user_functions::DrawNest() {
+void ALSA_qt_user_functions::DrawNest() {
 
     /* 2d cartesian coordinates of the nest */
     Real x_coordinate = loopFunctions.NestPosition.GetX();
@@ -77,7 +77,7 @@ void DSA_qt_user_functions::DrawNest() {
 /*****
  *
  *****/
-void DSA_qt_user_functions::DrawFood() {
+void ALSA_qt_user_functions::DrawFood() {
 
     Real x, y;
 
@@ -88,7 +88,7 @@ void DSA_qt_user_functions::DrawFood() {
     }
 }
 
-void DSA_qt_user_functions::DrawTargetRays() {
+void ALSA_qt_user_functions::DrawTargetRays() {
 
 	//size_t tick = loopFunctions.GetSpace().GetSimulationClock();
 	//size_t tock = loopFunctions.GetSimulator().GetPhysicsEngine("default").GetInverseSimulationClockTick() / 8;
@@ -105,4 +105,4 @@ void DSA_qt_user_functions::DrawTargetRays() {
     //}
 }
 
-REGISTER_QTOPENGL_USER_FUNCTIONS(DSA_qt_user_functions, "DSA_qt_user_functions")
+REGISTER_QTOPENGL_USER_FUNCTIONS(ALSA_qt_user_functions, "ALSA_qt_user_functions")

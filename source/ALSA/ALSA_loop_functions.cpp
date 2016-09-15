@@ -1,6 +1,6 @@
-#include "DSA_loop_functions.h"
+#include "ALSA_loop_functions.h"
 
-DSA_loop_functions::DSA_loop_functions() :
+ALSA_loop_functions::ALSA_loop_functions() :
 	RNG(argos::CRandom::CreateRNG("argos")),
     //MaxSimTime(3600 * GetSimulator().GetPhysicsEngine("default").GetInverseSimulationClockTick()),
     ResourceDensityDelay(0),
@@ -33,15 +33,15 @@ DSA_loop_functions::DSA_loop_functions() :
   PrintFinalScore(0)
 {}
 
-void DSA_loop_functions::Init(TConfigurationNode& node) {
+void ALSA_loop_functions::Init(TConfigurationNode& node) {
 CSimulator     *simulator     = &GetSimulator();
   CPhysicsEngine *physicsEngine = &simulator->GetPhysicsEngine("default");
   ticks_per_second = physicsEngine->GetInverseSimulationClockTick();
- argos::TConfigurationNode DDSA_node = argos::GetNode(node, "DDSA");
- argos::GetNodeAttribute(DDSA_node, "PrintFinalScore",                   PrintFinalScore);
- argos::GetNodeAttribute(DDSA_node, "FoodDistribution",                  FoodDistribution);
- argos::GetNodeAttribute(DDSA_node, "FoodItemCount",                  FoodItemCount);
- argos::GetNodeAttribute(DDSA_node, "NestRadius",                 NestRadius);
+ argos::TConfigurationNode ALSA_node = argos::GetNode(node, "DALSA");
+ argos::GetNodeAttribute(ALSA_node, "PrintFinalScore",                   PrintFinalScore);
+ argos::GetNodeAttribute(ALSA_node, "FoodDistribution",                  FoodDistribution);
+ argos::GetNodeAttribute(ALSA_node, "FoodItemCount",                  FoodItemCount);
+ argos::GetNodeAttribute(ALSA_node, "NestRadius",                 NestRadius);
 
  NestRadiusSquared = NestRadius*NestRadius;
 
@@ -58,7 +58,7 @@ CSimulator     *simulator     = &GetSimulator();
 	for(it = footbots.begin(); it != footbots.end(); it++) {
         argos::CFootBotEntity& footBot = *argos::any_cast<argos::CFootBotEntity*>(it->second);
         BaseController& c = dynamic_cast<BaseController&>(footBot.GetControllableEntity().GetController());
-        DSA_controller& c2 = dynamic_cast<DSA_controller&>(c);
+        ALSA_controller& c2 = dynamic_cast<ALSA_controller&>(c);
 
         c2.SetLoopFunctions(this);
 	}
@@ -67,13 +67,13 @@ CSimulator     *simulator     = &GetSimulator();
 }
 
 
-double DSA_loop_functions::Score()
+double ALSA_loop_functions::Score()
 {  
   return score;
 }
 
 
-void DSA_loop_functions::setScore(double s)
+void ALSA_loop_functions::setScore(double s)
 {
   score = s;
   if (score >= FoodItemCount) 
@@ -83,18 +83,18 @@ void DSA_loop_functions::setScore(double s)
     }
 }
 
-void DSA_loop_functions::PostExperiment() 
+void ALSA_loop_functions::PostExperiment() 
 {
   if (PrintFinalScore == 1) printf("%f, %f\n", getSimTimeInSeconds(), score);
 }
 
 
-void DSA_loop_functions::PreStep() 
+void ALSA_loop_functions::PreStep() 
 {
     sim_time++;
 }
 
-argos::Real DSA_loop_functions::getSimTimeInSeconds()
+argos::Real ALSA_loop_functions::getSimTimeInSeconds()
 {
   return sim_time/ticks_per_second;
 }
@@ -103,7 +103,7 @@ argos::Real DSA_loop_functions::getSimTimeInSeconds()
 /*****
  *
  *****/
-void DSA_loop_functions::SetFoodDistribution() {
+void ALSA_loop_functions::SetFoodDistribution() {
     switch(FoodDistribution) {
         case 0:
             RandomFoodDistribution();
@@ -122,7 +122,7 @@ void DSA_loop_functions::SetFoodDistribution() {
 /*****
  *
  *****/
-void DSA_loop_functions::RandomFoodDistribution() {
+void ALSA_loop_functions::RandomFoodDistribution() {
     FoodList.clear();
 
     argos::CVector2 placementPosition;
@@ -142,7 +142,7 @@ void DSA_loop_functions::RandomFoodDistribution() {
 /*****
  *
  *****/
-void DSA_loop_functions::ClusterFoodDistribution() {
+void ALSA_loop_functions::ClusterFoodDistribution() {
 
     argos::Real     foodOffset  = 3.0 * FoodRadius;
     size_t          foodToPlace = NumberOfClusters * ClusterWidthX * ClusterLengthY;
@@ -192,7 +192,7 @@ void DSA_loop_functions::ClusterFoodDistribution() {
 /*****
  *
  *****/
-void DSA_loop_functions::PowerLawFoodDistribution() {
+void ALSA_loop_functions::PowerLawFoodDistribution() {
     argos::Real foodOffset     = 3.0 * FoodRadius;
     size_t      foodPlaced     = 0;
     size_t      powerLawLength = 1;
@@ -247,7 +247,7 @@ void DSA_loop_functions::PowerLawFoodDistribution() {
 /*****
  *
  *****/
-bool DSA_loop_functions::IsOutOfBounds(argos::CVector2 p, size_t length, size_t width) {
+bool ALSA_loop_functions::IsOutOfBounds(argos::CVector2 p, size_t length, size_t width) {
     argos::CVector2 placementPosition = p;
 
     argos::Real foodOffset   = 3.0 * FoodRadius;
@@ -284,7 +284,7 @@ bool DSA_loop_functions::IsOutOfBounds(argos::CVector2 p, size_t length, size_t 
 /*****
  *
  *****/
-bool DSA_loop_functions::IsCollidingWithNest(argos::CVector2 p) {
+bool ALSA_loop_functions::IsCollidingWithNest(argos::CVector2 p) {
     argos::Real nestRadiusPlusBuffer = NestRadius + FoodRadius;
     argos::Real NRPB_squared = nestRadiusPlusBuffer * nestRadiusPlusBuffer;
 
@@ -294,7 +294,7 @@ bool DSA_loop_functions::IsCollidingWithNest(argos::CVector2 p) {
 /*****
  *
  *****/
-bool DSA_loop_functions::IsCollidingWithFood(argos::CVector2 p) {
+bool ALSA_loop_functions::IsCollidingWithFood(argos::CVector2 p) {
     argos::Real foodRadiusPlusBuffer = 2.0 * FoodRadius;
     argos::Real FRPB_squared = foodRadiusPlusBuffer * foodRadiusPlusBuffer;
 
@@ -305,4 +305,4 @@ bool DSA_loop_functions::IsCollidingWithFood(argos::CVector2 p) {
     return false;
 }
 
-REGISTER_LOOP_FUNCTIONS(DSA_loop_functions, "DSA_loop_functions")
+REGISTER_LOOP_FUNCTIONS(ALSA_loop_functions, "ALSA_loop_functions")

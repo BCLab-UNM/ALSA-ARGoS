@@ -1,21 +1,21 @@
-#ifndef DSA_CONTROLLER_H
-#define DSA_CONTROLLER_H
+#ifndef ALSA_CONTROLLER_H
+#define ALSA_CONTROLLER_H
 
 #include <source/Base/BaseController.h>
-#include <source/DSA/DSA_loop_functions.h>
+#include <source/ALSA/ALSA_loop_functions.h>
 
 using namespace argos;
 using namespace std;
 
-class DSA_loop_functions;
+class ALSA_loop_functions;
 
 static unsigned int num_targets_collected = 0;
 
-class DSA_controller : public BaseController {
+class ALSA_controller : public BaseController {
 
     public:
 
-        DSA_controller();
+        ALSA_controller();
 
         // CCI_Controller inheritence functions
         void Init(TConfigurationNode& node);
@@ -31,7 +31,7 @@ class DSA_controller : public BaseController {
 		void   addDirectionToPattern(char direction);
 		void   printPath(vector<char>&);
 
-		void SetLoopFunctions(DSA_loop_functions* lf) { loopFunctions = lf; }
+		void SetLoopFunctions(ALSA_loop_functions* lf) { loopFunctions = lf; }
 
 		argos::Real SimTimeInSeconds();
 
@@ -40,12 +40,12 @@ class DSA_controller : public BaseController {
         size_t NumberOfRobots;
         size_t NumberOfSpirals;
 
-        /* Robot DSA state variable */
-        enum DSA { SEARCHING = 1, RETURN_TO_NEST = 2, RETURN_TO_SEARCH = 3 } DSA;
+        /* Robot ALSA state variable */
+        enum ALSA { SEARCHING = 1, RETURN_TO_NEST = 2, RETURN_TO_SEARCH = 3 } ALSA;
 
         /* robot internal variables & statistics */
         CRandom::CRNG*      RNG;
-        DSA_loop_functions* loopFunctions;
+        ALSA_loop_functions* loopFunctions;
 
         CVector2            ReturnPosition;
         CVector2            ReturnPatternPosition;
@@ -90,4 +90,4 @@ class DSA_controller : public BaseController {
 	string results_full_path;
 };
 
-#endif /* DSA_CONTROLLER_H */
+#endif /* ALSA_CONTROLLER_H */

@@ -1,22 +1,22 @@
-#ifndef DSA_LOOP_FUNCTIONS_H
-#define DSA_LOOP_FUNCTIONS_H
+#ifndef ALSA_LOOP_FUNCTIONS_H
+#define ALSA_LOOP_FUNCTIONS_H
 
 #include <argos3/core/simulator/loop_functions.h>
 #include <argos3/plugins/robots/foot-bot/simulator/footbot_entity.h>
 #include <argos3/core/simulator/entity/floor_entity.h>
-#include <source/DSA/DSA_controller.h>
+#include <source/ALSA/ALSA_controller.h>
 
 using namespace argos;
 using namespace std;
 
-class DSA_loop_functions : public argos::CLoopFunctions {
+class ALSA_loop_functions : public argos::CLoopFunctions {
 
-	friend class DSA_controller;
-	friend class DSA_qt_user_functions;
+	friend class ALSA_controller;
+	friend class ALSA_qt_user_functions;
 
 	public:
 
-		DSA_loop_functions();
+		ALSA_loop_functions();
 
 		void Init(TConfigurationNode& node);
 		void PreStep();
@@ -93,4 +93,4 @@ class DSA_loop_functions : public argos::CLoopFunctions {
 	int PrintFinalScore;
 };
 
-#endif /* DSA_LOOP_FUNCTIONS_H */
+#endif /* ALSA_LOOP_FUNCTIONS_H */

@@ -1,13 +1,13 @@
-#include "DSA_controller.h"
+#include "ALSA_controller.h"
 
 /*****
  * Initialize most basic variables and objects here. Most of the setup should
  * be done in the Init(...) function instead of here where possible.
  *****/
-DSA_controller::DSA_controller() :
+ALSA_controller::ALSA_controller() :
     NumberOfRobots(0),
     NumberOfSpirals(0),
-    DSA(RETURN_TO_NEST),
+    ALSA(RETURN_TO_NEST),
     RNG(NULL),
     ResetReturnPosition(true),
     stopTimeStep(0),
@@ -18,7 +18,7 @@ DSA_controller::DSA_controller() :
  * Initialize the controller via the XML configuration file. ARGoS typically
  * wants objects & variables initialized here instead of in the constructor(s).
  *****/
-void DSA_controller::Init(TConfigurationNode& node) {
+void ALSA_controller::Init(TConfigurationNode& node) {
 
     compassSensor   = GetSensor<argos::CCI_PositioningSensor>("positioning");
     wheelActuator   = GetActuator<argos::CCI_DifferentialSteeringActuator>("differential_steering");
@@ -57,7 +57,7 @@ void DSA_controller::Init(TConfigurationNode& node) {
     struct tm * now = localtime( & t );
     stringstream ss;
 
-    ss << "DSA-"<<GIT_BRANCH<<"-"<<GIT_COMMIT_HASH<<"-" 
+    ss << "ALSA-"<<GIT_BRANCH<<"-"<<GIT_COMMIT_HASH<<"-" 
        << (now->tm_year) << '-'
        << (now->tm_mon + 1) << '-'
        <<  now->tm_mday << '-'
@@ -73,7 +73,7 @@ void DSA_controller::Init(TConfigurationNode& node) {
     // Only the first robot should do this:
 
 
-    if (GetId().compare("DSA_0") == 0)
+    if (GetId().compare("ALSA_0") == 0)
       {
   
    ofstream results_output_stream;
@@ -99,10 +99,10 @@ void DSA_controller::Init(TConfigurationNode& node) {
  results_output_stream.close();
       }
 
-    cout << "Finished Initializing the DDSA" << endl;
+    cout << "Finished Initializing the ALSA" << endl;
 }
 
-size_t DSA_controller::generatePattern(int N_circuits, int N_robots)
+size_t ALSA_controller::generatePattern(int N_circuits, int N_robots)
 {
     string ID = GetId();
     string ID_number;
@@ -162,7 +162,7 @@ size_t DSA_controller::generatePattern(int N_circuits, int N_robots)
     return RobotNumber;
 }
 
-int DSA_controller::calcDistanceToTravel(int i_robot, int i_circuit, int N_robots, char direction)
+int ALSA_controller::calcDistanceToTravel(int i_robot, int i_circuit, int N_robots, char direction)
 {
     int i = i_robot;
     int j = i_circuit;
@@ -211,7 +211,7 @@ int DSA_controller::calcDistanceToTravel(int i_robot, int i_circuit, int N_robot
     return 0;
 }
 
-void DSA_controller::printPath(vector<char>& path)
+void ALSA_controller::printPath(vector<char>& path)
 {
     cout << path.size() << endl;
     for(int i = 0; i<path.size(); i++)
@@ -220,7 +220,7 @@ void DSA_controller::printPath(vector<char>& path)
     }
 }
 
-void DSA_controller::GetPattern(string ith_Pattern)
+void ALSA_controller::GetPattern(string ith_Pattern)
 {
     copy(ith_Pattern.begin(),ith_Pattern.end(),back_inserter(tempPattern));
     reverse(tempPattern.begin(), tempPattern.end());
@@ -229,7 +229,7 @@ void DSA_controller::GetPattern(string ith_Pattern)
 // /*****
 //  *
 //  *****/
-void DSA_controller::CopyPatterntoTemp() 
+void ALSA_controller::CopyPatterntoTemp() 
 {
     copy(pattern.begin(),pattern.end(),back_inserter(tempPattern));
     reverse(tempPattern.begin(),tempPattern.end());/* Reverses the tempPattern */
@@ -237,13 +237,13 @@ void DSA_controller::CopyPatterntoTemp()
 
 /*****
  * Primary control loop for this controller object. This function will execute
- * the DSA logic once per frame.
+ * the ALSA logic once per frame.
  *****/
-void DSA_controller::ControlStep() 
+void ALSA_controller::ControlStep() 
 {
 
   // To draw paths
-  if (DSA == SEARCHING)
+  if (ALSA == SEARCHING)
     {
       CVector3 position3d(GetPosition().GetX(), GetPosition().GetY(), 0.00);
       CVector3 target3d(previous_position.GetX(), previous_position.GetY(), 0.00);
@@ -258,7 +258,7 @@ void DSA_controller::ControlStep()
   previous_position = GetPosition();
 
   /* Continue in a sprial */
-  if( DSA == SEARCHING )
+  if( ALSA == SEARCHING )
     {
       SetIsHeadingToNest(false);
       //  argos::LOG << "SEARCHING" << std::endl;
@@ -270,7 +270,7 @@ void DSA_controller::ControlStep()
 	    {
 	      ReturnPosition = GetPosition();
 	      ReturnPatternPosition = GetTarget();
-	      DSA = RETURN_TO_NEST;
+	      ALSA = RETURN_TO_NEST;
 	    }
 	  else
 	    {
@@ -286,14 +286,14 @@ void DSA_controller::ControlStep()
 	  GetTargets(); /* Initializes targets positions. */
 	}
     } 
-  else if( DSA == RETURN_TO_NEST) 
+  else if( ALSA == RETURN_TO_NEST) 
     {
       //argos::LOG << "RETURN_TO_NEST" << std::endl;
       SetIsHeadingToNest(true);
       // Check if we reached the nest. If so record that we dropped food off and go back to the spiral
       if((GetPosition() - loopFunctions->NestPosition).SquareLength() < loopFunctions->NestRadiusSquared) 
 	{
-	  DSA = RETURN_TO_SEARCH;
+	  ALSA = RETURN_TO_SEARCH;
 	  SetIsHeadingToNest(false);
 	  SetTarget(ReturnPosition);
 
@@ -318,7 +318,7 @@ void DSA_controller::ControlStep()
 	  SetTarget(loopFunctions->NestPosition);
 	}
     } 
-  else if( DSA == RETURN_TO_SEARCH ) 
+  else if( ALSA == RETURN_TO_SEARCH ) 
     {
       // argos::LOG << "RETURN_TO_SEARCH" << std::endl;
       SetIsHeadingToNest(false);
@@ -336,7 +336,7 @@ void DSA_controller::ControlStep()
 	  //argos::LOG << "RETURN_TO_SEARCH: Pattern Point" << std::endl;
 	  SetIsHeadingToNest(false);
 	  SetTarget(ReturnPatternPosition);
-	  DSA = SEARCHING;
+	  ALSA = SEARCHING;
 	}
     } 
   
@@ -346,7 +346,7 @@ void DSA_controller::ControlStep()
 /*****
  * Sets target North of the robot's current target.
  *****/
-void DSA_controller::SetTargetN(char x)
+void ALSA_controller::SetTargetN(char x)
 {
     CVector2 position = GetTarget();
     SetIsHeadingToNest(false);
@@ -356,7 +356,7 @@ void DSA_controller::SetTargetN(char x)
 /*****
  * Sets target South of the robot's current target.
  *****/
-void DSA_controller::SetTargetS(char x){
+void ALSA_controller::SetTargetS(char x){
     CVector2 position = GetTarget();
     SetIsHeadingToNest(false);
     SetTarget(CVector2(position.GetX()-SearcherGap,position.GetY()));
@@ -365,7 +365,7 @@ void DSA_controller::SetTargetS(char x){
 /*****
  * Sets target East of the robot's current target.
  *****/
-void DSA_controller::SetTargetE(char x){
+void ALSA_controller::SetTargetE(char x){
    CVector2 position = GetTarget();
    SetIsHeadingToNest(false);
    SetTarget(CVector2(position.GetX(),position.GetY()-SearcherGap));
@@ -374,7 +374,7 @@ void DSA_controller::SetTargetE(char x){
 /*****
  * Sets target West of the robot's current target.
  *****/
-void DSA_controller::SetTargetW(char x){
+void ALSA_controller::SetTargetW(char x){
     CVector2 position = GetTarget();
     SetIsHeadingToNest(false);
     SetTarget(CVector2(position.GetX(),position.GetY()+SearcherGap));
@@ -385,7 +385,7 @@ void DSA_controller::SetTargetW(char x){
  * and sets the target's direction base on the 
  * char at the current vector index.
  *****/
- void DSA_controller::GetTargets(){
+ void ALSA_controller::GetTargets(){
 
    /* If the robot hit target and the patter size >0
        then find the next direction. */
@@ -423,7 +423,7 @@ void DSA_controller::SetTargetW(char x){
  * distance tolerance. Declares that the robot had reached 
  * current target.
  *****/
- bool DSA_controller::TargetHit() {
+ bool ALSA_controller::TargetHit() {
     CVector2 position = GetPosition() - GetTarget();
     bool hit = false;
      
@@ -438,7 +438,7 @@ void DSA_controller::SetTargetW(char x){
  * the distance tolerance of the position of a food item. If the Robot has found
  * food then the appropriate boolean flags are triggered.
  *****/
-void DSA_controller::SetHoldingFood(){
+void ALSA_controller::SetHoldingFood(){
     if(IsHoldingFood() == false) 
       {
         vector <CVector2> newFoodList; 
@@ -464,14 +464,14 @@ void DSA_controller::SetHoldingFood(){
  *     true  = yes
  *     false = no
  *****/
-bool DSA_controller::IsHoldingFood() {
+bool ALSA_controller::IsHoldingFood() {
     return isHoldingFood;
 }
 /*****
  * After pressing the reset button in the GUI, this controller will be set to
  * default factory settings like at the start of a simulation.
  *****/
-void DSA_controller::Reset() {
+void ALSA_controller::Reset() {
     collisionDelay  = 0;
     SetIsHeadingToNest(true);
     SetTarget(loopFunctions->NestPosition);
@@ -481,4 +481,4 @@ void DSA_controller::Reset() {
     
 }
 
-REGISTER_CONTROLLER(DSA_controller, "DSA_controller")
+REGISTER_CONTROLLER(ALSA_controller, "ALSA_controller")
