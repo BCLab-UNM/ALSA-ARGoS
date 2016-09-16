@@ -19,6 +19,12 @@ add_definitions("-DGIT_COMMIT_HASH=\"${GIT_COMMIT_HASH}\"")
 add_definitions("-DGIT_BRANCH=\"${GIT_BRANCH}\"")
 
 
+# Find the boost filesystem package.
+find_package( Boost REQUIRED COMPONENTS system filesystem )
+include_directories( ${Boost_INCLUDE_DIRS} )
+
+
+
 ###############################################
 # define shared object files
 ###############################################
@@ -46,6 +52,7 @@ add_library(ALSA_controller     SHARED ALSA_controller.h
 
 target_link_libraries(	ALSA_controller
 			BaseController
+			${Boost_LIBRARIES}
 			)
 
 target_link_libraries(ALSA_loop_functions
