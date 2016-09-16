@@ -1,4 +1,5 @@
 #include "ALSA_controller.h"
+#include <boost/filesystem.hpp> // For creating missing results directory
 
 /*****
  * Initialize most basic variables and objects here. Most of the setup should
@@ -53,7 +54,7 @@ void ALSA_controller::Init(TConfigurationNode& node) {
     TrailColor = CColor(std::rand()%255, std::rand()%255, std::rand()%255, 255);
 
     // Name the results file with the current time and date
- time_t t = time(0);   // get time now
+    time_t t = time(0);   // get time now
     struct tm * now = localtime( & t );
     stringstream ss;
 
@@ -72,31 +73,36 @@ void ALSA_controller::Init(TConfigurationNode& node) {
 
     // Only the first robot should do this:
 
-
+   // If the results directory specified by the user does not exist create it
+   boost::filesystem::path dir(results_path);
+   if(!(boost::filesystem::exists(results_path))) {
+     boost::filesystem::create_directory(results_path);
+   }
+   
     if (GetId().compare("ALSA_0") == 0)
       {
   
-   ofstream results_output_stream;
- results_output_stream.open(results_full_path, ios::app);
- results_output_stream << "NumberOfRobots, "
-		       << "NumberOfSpirals, "
-		       << "TargetDistanceTolerance, "
-		       << "TargetAngleTolerance, "
-		       << "SearcherGap, "
-		       << "FoodDistanceTolerance, "
-		       << "RobotForwardSpeed, "
-		       << "RobotRotationSpeed, "
-		       << "RandomSeed" << endl
-                       << NumberOfRobots << ", "
-		       << NumberOfSpirals << ", "
-		       << TargetDistanceTolerance << ", "
-		       << TargetAngleTolerance << ", "
-		       << SearcherGap << ", "
-		       << FoodDistanceTolerance << ", "
-		       << RobotForwardSpeed << ", "
-		       << RobotRotationSpeed << ", "
-		       << CSimulator::GetInstance().GetRandomSeed() << endl;  
- results_output_stream.close();
+	ofstream results_output_stream;
+	results_output_stream.open(results_full_path, ios::app);
+	results_output_stream << "NumberOfRobots, "
+			      << "NumberOfSpirals, "
+			      << "TargetDistanceTolerance, "
+			      << "TargetAngleTolerance, "
+			      << "SearcherGap, "
+			      << "FoodDistanceTolerance, "
+			      << "RobotForwardSpeed, "
+			      << "RobotRotationSpeed, "
+			      << "RandomSeed" << endl
+			      << NumberOfRobots << ", "
+			      << NumberOfSpirals << ", "
+			      << TargetDistanceTolerance << ", "
+			      << TargetAngleTolerance << ", "
+			      << SearcherGap << ", "
+			      << FoodDistanceTolerance << ", "
+			      << RobotForwardSpeed << ", "
+			      << RobotRotationSpeed << ", "
+			      << CSimulator::GetInstance().GetRandomSeed() << endl;  
+	results_output_stream.close();
       }
 
     cout << "Finished Initializing the ALSA" << endl;

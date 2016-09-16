@@ -18,6 +18,7 @@ execute_process(
 add_definitions("-DGIT_COMMIT_HASH=\"${GIT_COMMIT_HASH}\"")
 add_definitions("-DGIT_BRANCH=\"${GIT_BRANCH}\"")
 
+
 ###############################################
 # define shared object files
 ###############################################
@@ -43,8 +44,9 @@ add_library(ALSA_controller     SHARED ALSA_controller.h
 # link shared object files to dependencies
 ###############################################
 
-target_link_libraries(ALSA_controller
-					  BaseController)
+target_link_libraries(	ALSA_controller
+			BaseController
+			)
 
 target_link_libraries(ALSA_loop_functions
                       ALSA_controller
@@ -53,4 +55,7 @@ target_link_libraries(ALSA_loop_functions
                       argos3plugin_simulator_footbot
                       argos3plugin_simulator_genericrobot
                       argos3plugin_simulator_qtopengl
-                      ${QT_LIBRARIES} ${GLUT_LIBRARY} ${OPENGL_LIBRARY})
+                      ${QT_LIBRARIES}
+		      ${GLUT_LIBRARY}
+		      ${OPENGL_LIBRARY}
+		      )

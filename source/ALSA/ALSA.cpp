@@ -10,7 +10,8 @@ using namespace std;
 
 ALSA::ALSA()
 {
-  min_step_length = 0.5;
+  min_step_length = 0.05;
+  max_step_length = 100;
   mu = 1.5;
   hopkins_index = 1;
 }
@@ -27,9 +28,7 @@ GoalState ALSA::getNextGoalPosition(pair<float, float> current_position)
   float goal_yaw = (rand()*1.0/RAND_MAX)*2*M_PI;
   
   //select new position with distance selected from a power law distribution
-  float unif_var = rand()*1.0/RAND_MAX;
-  
-  float step_length = xmin*pow(unif_var,1/(mu-1));
+  float step_length = drawFromPowerLawDistribution(min_step_length, max_step_length, mu);
 
   // Populate the position to return
   goal_state.x = current_position.first + (step_length * cos(goal_yaw));
@@ -37,6 +36,17 @@ GoalState ALSA::getNextGoalPosition(pair<float, float> current_position)
   goal_state.yaw = goal_yaw;      
   
   return goal_state;
+}
+
+//Weisstein, Eric W. "Random Number." From MathWorld--A Wolfram Web Resource. http://mathworld.wolfram.com/RandomNumber.html
+float ALSA::drawFromPowerLawDistribution( float min, float max, float mu )
+{
+  float unif_var = rand()*1.0/RAND_MAX;
+  float min_power = pow(min, mu+1);
+  float max_power = pow(max, mu+1);
+  float base_variate =  min_power+max_power-min_power*unif_var;
+  float exponent = 1/(mu+1);
+  return pow(base_variate, exponent);
 }
 
 void ALSA::addDetectedTarget(time_t t, float x, float y, int id)

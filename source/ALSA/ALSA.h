@@ -30,9 +30,11 @@ class ALSA
   ~ALSA();
 
  private:
+  float drawFromPowerLawDistribution(float min, float max, float mu);
   float calcHopkinsIndex(vector<Coordinate*> S, float max_x, float min_x, float max_y, float min_y, float max_z, float min_z);
   float mapHopkinsToMu(float hopkins_index);
   float min_step_length; // Define the minimum step length to be 5 cm
+  float max_step_length; // Define the maximum step length to be 100 m
   float mu; // mu is the PDF inverse power law exponent
   float hopkins_index;
   vector<TargetDetectionEvent> targets;

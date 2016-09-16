@@ -28,11 +28,15 @@ find_package(GSL REQUIRED)
 # Find the LUA package.
 find_package(Lua52 REQUIRED)
 
+# Find the boost filesystem package.
+find_package( Boost REQUIRED COMPONENTS system filesystem )
+include_directories( ${Boost_INCLUDE_DIRS} )
+
 # Set ARGoS include directory.
-include_directories(${CMAKE_SOURCE_DIR} ${ARGOS_INCLUDE_DIRS} ${GSL_INCLUDE_DIR} ${LUA_INCLUDE_DIR})
+include_directories(${CMAKE_SOURCE_DIR} ${ARGOS_INCLUDE_DIRS} ${GSL_INCLUDE_DIR} ${LUA_INCLUDE_DIR} ${BOOST_INCLUDE_DIRS})
 
 # Set ARGoS link directory.
-link_directories(${ARGOS_LIBRARY_DIRS})
+link_directories(${ARGOS_LIBRARY_DIRS} ${BOOST_LIBRARIES})
 
 # Descend into the source code directory.
 add_subdirectory(source)
