@@ -241,7 +241,7 @@ void ALSA_controller::CopyPatterntoTemp()
  *****/
 void ALSA_controller::ControlStep() 
 {
-
+  
   // To draw paths
   if (STATE == SEARCHING)
     {
@@ -270,6 +270,17 @@ void ALSA_controller::ControlStep()
     {
       
     } 
+
+  // Use the ALSA controller to select the next goal location
+  CVector2 target = GetTarget();
+  pair<float, float> current_position = make_pair(target.GetX(), target.GetY()); 
+  GoalState goal_state = alsa.getNextGoalPosition( current_position );
+
+   ofstream results_output_stream;
+ results_output_stream.open(results_full_path, ios::app);
+
+  results_output_stream << goal_state.x << ", " << goal_state.y << "\n";
+  SetTarget(CVector2(goal_state.x,goal_state.y));
   
   Move();
 }   
