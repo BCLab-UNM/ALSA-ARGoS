@@ -3,7 +3,7 @@
 
 using namespace std;
 
-TargetDetectionEvent::TargetDetectionEvent( time_t t, float x, float y, int id)
+TargetDetectionEvent::TargetDetectionEvent( time_t t, float x, float y)
 {
   position = Coordinate(x, y, 0.0f, t);
 }
@@ -21,11 +21,6 @@ float TargetDetectionEvent::getX()
 float TargetDetectionEvent::getY()
 {
   return position.getY();
-}
-
-int TargetDetectionEvent::getID()
-{
-  return id;
 }
 
 Coordinate* TargetDetectionEvent::getPositionPtr()

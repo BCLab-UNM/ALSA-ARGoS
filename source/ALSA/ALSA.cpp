@@ -12,29 +12,28 @@ ALSA::ALSA()
 {
   min_step_length = 0.05;
   max_step_length = 100;
-  mu = 1.5;
+  mu = -2.0;
   hopkins_index = 1;
+  previous_state.x = 0;
+  previous_state.y = 0;
 }
 
 GoalState ALSA::getNextGoalPosition(pair<float, float> current_position)
 {
   GoalState goal_state;
   
-  float xmin = min_step_length; // Set the minimum step length
-  pair<float, float> goal_position;
-
   // We don't care about the current yaw (heading) since the movement is uncorrelated
   // Use a levy walk formulation - so uniform heading.
   float goal_yaw = (rand()*1.0/RAND_MAX)*2*M_PI;
   
   //select new position with distance selected from a power law distribution
   float step_length = drawFromPowerLawDistribution(min_step_length, max_step_length, mu);
-
+  
   // Populate the position to return
   goal_state.x = current_position.first + (step_length * cos(goal_yaw));
   goal_state.y = current_position.second + (step_length * sin(goal_yaw));
   goal_state.yaw = goal_yaw;      
-  
+
   return goal_state;
 }
 
@@ -49,18 +48,35 @@ float ALSA::drawFromPowerLawDistribution( float min, float max, float mu )
   return pow(base_variate, exponent);
 }
 
-void ALSA::addDetectedTarget(time_t t, float x, float y, int id)
+void ALSA::addDetectedTarget(time_t t, float x, float y)
 {
-  targets.push_back(TargetDetectionEvent(t, x, y, id));
+  targets.push_back(TargetDetectionEvent(t, x, y));
 }
 
 // Update Strategy analyses the targets detected so far and chooses a new value for mu
 void ALSA::updateStrategy()
 {
+  
+  // Set mu given H
+
+  calcHopkinsIndex();
+  this->mu = mapHopkinsToMu(hopkins_index);
+  
+}
+
+float ALSA::mapHopkinsToMu(float hopkins_index)
+{
+  // Simple lookup of the "right" mu given the hopkins index (From Robotica)
+  if (hopkins_index > 0.95) return 1.7;
+
+  return 1.4;
+}
+
+float ALSA::calcHopkinsIndex()
+{
   // 1) Extract coordinates from targets vector
   // 2) Calculate the Hopkins index, H, of the coordinates
-  // 3) Set mu given H
-
+  
   // 1) Extract coordinates from targets vector and store in target_positions
   vector<Coordinate*> target_positions;
   for (std::vector<TargetDetectionEvent>::iterator TDEit = targets.begin() ; TDEit != targets.end(); ++TDEit)
@@ -88,16 +104,7 @@ void ALSA::updateStrategy()
   
   this->hopkins_index = calcHopkinsIndex(target_positions, max_x, min_x, max_y, min_y, min_z, max_z);
 
-  this->mu = mapHopkinsToMu(hopkins_index);
-  
-}
-
-float ALSA::mapHopkinsToMu(float hopkins_index)
-{
-  // Simple lookup of the "right" mu given the hopkins index (From Robotica)
-  if (hopkins_index > 0.95) return 1.7;
-
-  return 1.4;
+  return hopkins_index;
 }
 
 // Calculate the Hopkins index of the target distribution encoutered so far

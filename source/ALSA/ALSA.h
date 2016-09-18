@@ -23,11 +23,14 @@ class ALSA
  public:
   ALSA();
   GoalState getNextGoalPosition(pair<float, float> current_position);
-  void addDetectedTarget(time_t t, float x, float y, int id);
+  void addDetectedTarget(time_t t, float x, float y);
   void updateStrategy(); // Update the levy exponent given the state of the target vector
   float getMu();
   float getHopkinsIndex();
+  float calcHopkinsIndex();
   ~ALSA();
+
+  GoalState previous_state;
 
  private:
   float drawFromPowerLawDistribution(float min, float max, float mu);

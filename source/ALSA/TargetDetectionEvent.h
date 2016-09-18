@@ -7,7 +7,7 @@
 class TargetDetectionEvent
 {
 public:
-TargetDetectionEvent(time_t t, float x, float y, int id);
+TargetDetectionEvent(time_t t, float x, float y);
 
 time_t getTime();
 float getX();
@@ -19,7 +19,6 @@ Coordinate* getPositionPtr();
 private:
 
 Coordinate position;
-  int id;
 
 };
 
