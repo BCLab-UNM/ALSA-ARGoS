@@ -16,6 +16,8 @@ ALSA::ALSA()
   hopkins_index = 1;
   previous_state.x = 0;
   previous_state.y = 0;
+
+  max_x = min_x = min_y = max_y = 0.0f;
 }
 
 GoalState ALSA::getNextGoalPosition(pair<float, float> current_position)
@@ -85,6 +87,7 @@ float ALSA::calcHopkinsIndex()
     }
 
   // Find the bounds of the targets seen so far.
+  /*
   float max_x = std::numeric_limits<double>::min();
   float min_x = std::numeric_limits<double>::max();
   float max_y = std::numeric_limits<double>::min();
@@ -102,8 +105,10 @@ float ALSA::calcHopkinsIndex()
       if ((**it).getZ() < min_z) min_z = (**it).getZ();
     }
   
+  */ // Use the arena bounds - otherwise we are measuring the structure within the clusters instead of globally...? 
+  
   // To do: calculate as the mean over n realizations of the uniform dist
-  float hopkins_index = calcHopkinsIndex(target_positions, max_x, min_x, max_y, min_y, min_z, max_z);
+  float hopkins_index = calcHopkinsIndex(target_positions, max_x, min_x, max_y, min_y, 0, 0);
 
   return hopkins_index;
 }
@@ -151,8 +156,8 @@ float ALSA::calcHopkinsIndex(vector<Coordinate*> S, float max_x, float min_x, fl
 
     vector<Coordinate*> R;
     
-    double U = 0;
-    double W = 0; // Running sum for uniformly distributed nearst neighbor distances
+    double U = 0; // Running sum for uniformly distributed nearst neighbor distances
+    double W = 0; // Running sim for observed inter-target distances
 
     for(unsigned int i = 0; i < S.size(); i++)
     {
@@ -197,8 +202,8 @@ float ALSA::calcHopkinsIndex(vector<Coordinate*> S, float max_x, float min_x, fl
         }
 
         // Add distance to the nearest neighbor to the sum
-        W += min_R_distance;
-        U += min_S_distance;
+        U += min_R_distance;
+        W += min_S_distance;
     }
 
     double result = U/(U+W);
@@ -217,6 +222,26 @@ float ALSA::getHopkinsIndex()
 float ALSA::getMu()
 {
   return mu;
+}
+
+void ALSA::setMaxX(float x)
+{
+  max_x = x;
+}
+
+void ALSA::setMinX(float x)
+{
+  min_x = x;
+}
+
+void ALSA::setMaxY(float y)
+{
+  max_y = y;
+}
+
+void ALSA::setMinY(float y)
+{
+  min_y = y;
 }
 
 ALSA::~ALSA()

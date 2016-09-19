@@ -101,7 +101,20 @@ void ALSA_controller::Init(TConfigurationNode& node) {
    results_output_stream.close();
   }
 
- // Use the ALSA controller to select the initial goal location
+   // Set the arena size for ALSA
+   const CVector3& cArenaSize = CSimulator::GetInstance().GetSpace().GetArenaSize();
+   float max_x = cArenaSize.GetX()/2.0;
+   float min_x = -cArenaSize.GetX()/2.0;
+   
+   float max_y = cArenaSize.GetY()/2.0;
+   float min_y = -cArenaSize.GetY()/2.0;
+
+   alsa.setMaxX(  max_x );
+   alsa.setMinX(  min_x );
+   alsa.setMaxY(  max_y );
+   alsa.setMinY(  min_y );
+
+   // Use the ALSA controller to select the initial goal location
  pair<float, float> current_position = make_pair(previous_position.GetX(), previous_position.GetY()); 
  
  GoalState goal_state = alsa.getNextGoalPosition( current_position );
@@ -131,8 +144,14 @@ void ALSA_controller::ControlStep()
 	{
 	  target_positions.push_back(new Coordinate(food_itr->GetX(), food_itr->GetY(), 0, 0));
 	}
+      const CVector3& cArenaSize = CSimulator::GetInstance().GetSpace().GetArenaSize();
+      float max_x = cArenaSize.GetX()/2.0;
+      float min_x = -cArenaSize.GetX()/2.0;
+
+      float max_y = cArenaSize.GetY()/2.0;
+      float min_y = -cArenaSize.GetY()/2.0;
       
-      global_hopkins_index = alsa.calcHopkinsIndex( target_positions );
+      global_hopkins_index = alsa.calcHopkinsIndex( target_positions, max_x, min_x, max_y, min_y, 0, 0 );
       need_global_hopkins = false;
     }
    
@@ -178,13 +197,13 @@ void ALSA_controller::ControlStep()
 	    {
 	      float hopkins_index = alsa.getHopkinsIndex();
 	      float mu = alsa.getMu();
-	      
+
 	      argos::LOG << loopFunctions->Score() << ", " << hopkins_index << "("<< global_hopkins_index << ": " << 100*fabs(hopkins_index-global_hopkins_index)/global_hopkins_index <<"%)" << ", " << mu << std::endl;
 
 	      ofstream results_output_stream;
 	      results_output_stream.open(results_full_path, ios::app);
 	      
-	      results_output_stream << loopFunctions->Score() << ", " << hopkins_index << ", " << mu << "\n";
+	      results_output_stream << loopFunctions->Score() << ", " << hopkins_index << "("<< global_hopkins_index << ": " << 100*fabs(hopkins_index-global_hopkins_index)/global_hopkins_index <<"%)" << ", " << mu << std::endl;
 	      results_output_stream.close();
 	    }
 	}

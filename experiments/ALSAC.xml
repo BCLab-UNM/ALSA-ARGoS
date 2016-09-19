@@ -121,7 +121,7 @@
       </camera>
       <user_functions label="ALSA_qt_user_functions"/>
     </qt-opengl>
--->
+    -->
   </visualization>
 
 </argos-configuration>
