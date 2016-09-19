@@ -72,6 +72,9 @@ class ALSA_controller : public BaseController {
 	// The ALSA search pattern generator
 	ALSA alsa;
 
+        // Initial Levy value to use for the ALSA
+        float LevyExponent;
+        
 	// The Hopkins index calculated for the whole arena
 	// This is used as a point of comparison for tracking the online partial
 	// Hopkins index calculated by robots as they go.

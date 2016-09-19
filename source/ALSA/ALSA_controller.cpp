@@ -28,10 +28,9 @@ void ALSA_controller::Init(TConfigurationNode& node) {
     proximitySensor = GetSensor<argos::CCI_FootBotProximitySensor>("footbot_proximity");
 
     argos::TConfigurationNode settings = argos::GetNode(node, "settings");
-    argos::GetNodeAttribute(settings, "NumberOfRobots",          NumberOfRobots);
-    argos::GetNodeAttribute(settings, "NumberOfSpirals",         NumberOfSpirals);
     argos::GetNodeAttribute(settings, "SearchStepSize",          SearchStepSize);
     argos::GetNodeAttribute(settings, "NestDistanceTolerance", NestDistanceTolerance);
+    argos::GetNodeAttribute(settings, "LevyExponent", LevyExponent);
     argos::GetNodeAttribute(settings, "NestAngleTolerance", NestAngleTolerance);
     argos::GetNodeAttribute(settings, "NestAngleTolerance", NestAngleTolerance);
     argos::GetNodeAttribute(settings, "TargetDistanceTolerance", TargetDistanceTolerance);
@@ -69,38 +68,6 @@ void ALSA_controller::Init(TConfigurationNode& node) {
     string results_file_name = ss.str();
    results_full_path = results_path+"/"+results_file_name;        
 
-   // Only one (the first) robot should do this:
-   if (GetId().compare("ALSA_0") == 0)
-     {
-       
-       // If the results directory specified by the user does not exist create it
-       boost::filesystem::path dir(results_path);
-       if(!(boost::filesystem::exists(results_path))) {
-	 boost::filesystem::create_directory(results_path);
-       }
-       
-       ofstream results_output_stream;
-       results_output_stream.open(results_full_path, ios::app);
-       results_output_stream << "NumberOfRobots, "
-			 << "NumberOfSpirals, "
-			 << "TargetDistanceTolerance, "
-			 << "TargetAngleTolerance, "
-			 << "SearcherGap, "
-			 << "FoodDistanceTolerance, "
-			 << "RobotForwardSpeed, "
-			 << "RobotRotationSpeed, "
-			 << "RandomSeed" << endl
-			 << NumberOfRobots << ", "
-			 << NumberOfSpirals << ", "
-			 << TargetDistanceTolerance << ", "
-			 << TargetAngleTolerance << ", "
-			 << FoodDistanceTolerance << ", "
-			 << RobotForwardSpeed << ", "
-			 << RobotRotationSpeed << ", "
-			 << CSimulator::GetInstance().GetRandomSeed() << endl;  
-   results_output_stream.close();
-  }
-
    // Set the arena size for ALSA
    const CVector3& cArenaSize = CSimulator::GetInstance().GetSpace().GetArenaSize();
    float max_x = cArenaSize.GetX()/2.0;
@@ -114,8 +81,42 @@ void ALSA_controller::Init(TConfigurationNode& node) {
    alsa.setMaxY(  max_y );
    alsa.setMinY(  min_y );
 
+   alsa.setMu(LevyExponent);
+   
+   // Only one (the first) robot should do this:
+   if (GetId().compare("ALSA_0") == 0)
+     {
+       
+       // If the results directory specified by the user does not exist create it
+       boost::filesystem::path dir(results_path);
+       if(!(boost::filesystem::exists(results_path))) {
+	 boost::filesystem::create_directory(results_path);
+       }
+       
+       ofstream results_output_stream;
+       results_output_stream.open(results_full_path, ios::app);
+       results_output_stream << "NumberOfRobots, "
+                             << "NumberOfSpirals, "
+                             << "TargetDistanceTolerance, "
+                             << "TargetAngleTolerance, "
+                             << "SearcherGap, "
+                             << "FoodDistanceTolerance, "
+                             << "RobotForwardSpeed, "
+                             << "RobotRotationSpeed, "
+                             << "RandomSeed" << endl
+                             << "Initial Mu" << endl
+                             << TargetDistanceTolerance << ", "
+                             << TargetAngleTolerance << ", "
+                             << FoodDistanceTolerance << ", "
+                             << RobotForwardSpeed << ", "
+                             << RobotRotationSpeed << ", "
+                             << CSimulator::GetInstance().GetRandomSeed() << ", "
+                             << alsa.getMu() << endl;  
+       results_output_stream.close();
+  }
+   
    // Use the ALSA controller to select the initial goal location
- pair<float, float> current_position = make_pair(previous_position.GetX(), previous_position.GetY()); 
+   pair<float, float> current_position = make_pair(GetPosition().GetX(), GetPosition().GetY()); 
  
  GoalState goal_state = alsa.getNextGoalPosition( current_position );
  SetTarget(CVector2(goal_state.x, goal_state.y));
@@ -184,21 +185,22 @@ void ALSA_controller::ControlStep()
 	  alsa.addDetectedTarget(SimulationTick(), previous_position.GetX(), previous_position.GetY());
 	  
 	  // update the ALSA strategy
-	  alsa.updateStrategy();
+	  //alsa.updateStrategy();
 	  
 	  // For the first robot 
 	  
           float hopkins_index = alsa.getHopkinsIndex();
           float mu = alsa.getMu();
           
-          argos::LOG << "Robot " << GetId() << ": " << loopFunctions->Score() << ", " << hopkins_index << "("<< global_hopkins_index << ": " << 100*fabs(hopkins_index-global_hopkins_index)/global_hopkins_index <<"%)" << ", " << mu << std::endl;
-          
+          // argos::LOG << "Robot " << GetId() << ": " << loopFunctions->Score() << ", " << hopkins_index << "("<< global_hopkins_index << ": " << 100*fabs(hopkins_index-global_hopkins_index)/global_hopkins_index <<"%)" << ", " << mu << std::endl;
+
+          /*
           ofstream results_output_stream;
           results_output_stream.open(results_full_path, ios::app);
 	  
           results_output_stream << loopFunctions->Score() << ", " << hopkins_index << "("<< global_hopkins_index << ": " << 100*fabs(hopkins_index-global_hopkins_index)/global_hopkins_index <<"%)" << ", " << mu << std::endl;
           results_output_stream.close();
-	  
+	  */
 	}
       else // Continue searching
  	{

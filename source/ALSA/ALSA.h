@@ -25,6 +25,7 @@ class ALSA
   GoalState getNextGoalPosition(pair<float, float> current_position);
   void addDetectedTarget(time_t t, float x, float y);
   void updateStrategy(); // Update the levy exponent given the state of the target vector
+  void setMu(float);
   float getMu();
   float getHopkinsIndex();
   float calcHopkinsIndex();

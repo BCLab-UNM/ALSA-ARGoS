@@ -271,6 +271,11 @@ void ALSA::setMinY(float y)
   min_y = y;
 }
 
+void ALSA::setMu(float mu)
+{
+  this->mu = mu;
+}
+
 ALSA::~ALSA()
 {
 }
