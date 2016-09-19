@@ -1,19 +1,19 @@
-[INFO] Loaded library "/usr/local/Cellar/argos3/3.0.0-beta37/lib/argos3/libargos3core_simulator.dylib"
-[INFO] Loaded library "/usr/local/Cellar/argos3/3.0.0-beta37/lib/argos3/libargos3plugin_simulator_dynamics2d.dylib"
-[INFO] Loaded library "/usr/local/Cellar/argos3/3.0.0-beta37/lib/argos3/libargos3plugin_simulator_entities.dylib"
-[INFO] Loaded library "/usr/local/Cellar/argos3/3.0.0-beta37/lib/argos3/libargos3plugin_simulator_epuck.dylib"
-[INFO] Loaded library "/usr/local/Cellar/argos3/3.0.0-beta37/lib/argos3/libargos3plugin_simulator_eyebot.dylib"
-[INFO] Loaded library "/usr/local/Cellar/argos3/3.0.0-beta37/lib/argos3/libargos3plugin_simulator_footbot.dylib"
-[INFO] Loaded library "/usr/local/Cellar/argos3/3.0.0-beta37/lib/argos3/libargos3plugin_simulator_genericrobot.dylib"
-[INFO] Loaded library "/usr/local/Cellar/argos3/3.0.0-beta37/lib/argos3/libargos3plugin_simulator_media.dylib"
-[INFO] Loaded library "/usr/local/Cellar/argos3/3.0.0-beta37/lib/argos3/libargos3plugin_simulator_pointmass3d.dylib"
-[INFO] Loaded library "/usr/local/Cellar/argos3/3.0.0-beta37/lib/argos3/libargos3plugin_simulator_qtopengl.dylib"
-[INFO] Loaded library "/usr/local/Cellar/argos3/3.0.0-beta37/lib/argos3/libargos3plugin_simulator_spiri.dylib"
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3plugin_simulator_epuck.so"
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3plugin_simulator_genericrobot.so"
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3plugin_simulator_footbot.so"
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3plugin_simulator_media.so"
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3plugin_simulator_dynamics2d.so"
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3plugin_simulator_entities.so"
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3plugin_simulator_spiri.so"
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3core_simulator.so"
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3plugin_simulator_pointmass3d.so"
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3plugin_simulator_qtopengl.so"
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3plugin_simulator_eyebot.so"
 [INFO] Not using threads
-[INFO] Using random seed = 725651
+[INFO] Using random seed = 449552
 [INFO] Using simulation clock tick = 0.03125
 [INFO] Total experiment length in clock ticks = 57600
-[INFO] Loaded library "./build/source/ALSA/libALSA_controller.dylib"
+[INFO] Loaded library "./build/source/ALSA/libALSA_controller.so"
 [INFO] Loaded library "./build/source/ALSA/libALSA_loop_functions.so"
 Finished Initializing the ALSA
 Finished Initializing the ALSA
@@ -23,19 +23,3 @@ Finished Initializing the ALSA
 Finished Initializing the ALSA
 [INFO] The physics engine "dyn2d" will perform 10 iterations per tick (dt = 0.003125 sec)
 [INFO] No visualization selected.
-8, 1(0.473685: 111.111%), -1.8
-17, 0.0610714(0.473685: 87.1072%), -1.2
-24, 0.424595(0.473685: 10.3634%), -1.2
-38, 0.406554(0.473685: 14.172%), -1.2
-42, 0.309693(0.473685: 34.6206%), -1.2
-48, 0.13272(0.473685: 71.9813%), -1.2
-55, 0.149456(0.473685: 68.4482%), -1.2
-61, 0.174083(0.473685: 63.2492%), -1.2
-78, 0.254008(0.473685: 46.3762%), -1.2
-81, 0.351469(0.473685: 25.8011%), -1.2
-85, 0.186816(0.473685: 60.5611%), -1.2
-87, 0.266923(0.473685: 43.6497%), -1.2
-93, 0.193903(0.473685: 59.065%), -1.2
-97, 0.205025(0.473685: 56.717%), -1.2
-105, 0.436453(0.473685: 7.86025%), -1.2
-112, 0.314113(0.473685: 33.6874%), -1.2

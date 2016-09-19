@@ -2,7 +2,7 @@
 
 ALSA_loop_functions::ALSA_loop_functions() :
 	RNG(argos::CRandom::CreateRNG("argos")),
-    //MaxSimTime(3600 * GetSimulator().GetPhysicsEngine("default").GetInverseSimulationClockTick()),
+    //MaxSimTime(3600 * GetSimulator().GetPhysicsEngine("dyn2d").GetInverseSimulationClockTick()),
     ResourceDensityDelay(0),
     //RandomSeed(GetSimulator().GetRandomSeed()),
     SimCounter(0),
@@ -35,7 +35,7 @@ ALSA_loop_functions::ALSA_loop_functions() :
 
 void ALSA_loop_functions::Init(TConfigurationNode& node) {
 CSimulator     *simulator     = &GetSimulator();
-  CPhysicsEngine *physicsEngine = &simulator->GetPhysicsEngine("default");
+  CPhysicsEngine *physicsEngine = &simulator->GetPhysicsEngine("dyn2d");
   ticks_per_second = physicsEngine->GetInverseSimulationClockTick();
  argos::TConfigurationNode ALSA_node = argos::GetNode(node, "DALSA");
  argos::GetNodeAttribute(ALSA_node, "PrintFinalScore",                   PrintFinalScore);

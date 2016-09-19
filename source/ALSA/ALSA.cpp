@@ -107,10 +107,14 @@ float ALSA::calcHopkinsIndex()
   
   */ // Use the arena bounds - otherwise we are measuring the structure within the clusters instead of globally...? 
   
-  // To do: calculate as the mean over n realizations of the uniform dist
-  float hopkins_index = calcHopkinsIndex(target_positions, max_x, min_x, max_y, min_y, 0, 0);
+  // Why 20?
 
-  return hopkins_index;
+  float hopkins_index = 0;
+  float n_reps = 20;
+  for (int i = 0; i < n_reps; i++)
+    hopkins_index += calcHopkinsIndex(target_positions, max_x, min_x, max_y, min_y, 0, 0);
+
+  return hopkins_index/n_reps;
 }
 
 // Convenience version of calcHopkins index that just takes a set of points.
@@ -118,6 +122,7 @@ float ALSA::calcHopkinsIndex()
 float ALSA::calcHopkinsIndex(vector<Coordinate*> S)
 {
   // Find the bounds of the targets seen so far.
+  /*
   float max_x = std::numeric_limits<double>::min();
   float min_x = std::numeric_limits<double>::max();
   float max_y = std::numeric_limits<double>::min();
@@ -134,16 +139,25 @@ float ALSA::calcHopkinsIndex(vector<Coordinate*> S)
       if ((**it).getZ() > max_z) max_z = (**it).getZ();
       if ((**it).getZ() < min_z) min_z = (**it).getZ();
     }
+  */
+    
+  // Why 20?
+  float hopkins_index = 0;
+  float n_reps = 20;
+  for (int i = 0; i < n_reps; i++)
+    hopkins_index += calcHopkinsIndex(S, max_x, min_x, max_y, min_y, 0, 0);
   
-  float hopkins_index = calcHopkinsIndex(S, max_x, min_x, max_y, min_y, min_z, max_z);
-
-  return hopkins_index;
+  return hopkins_index/n_reps;
 }
 
 // Calculate the Hopkins index of the target distribution encoutered so far
+// n_points is the number of nearest neighbors to add to the score
 float ALSA::calcHopkinsIndex(vector<Coordinate*> S, float max_x, float min_x, float max_y, float min_y, float max_z, float min_z)
 {
 
+  // Sample size for the S and R point sets
+  unsigned int n_points = 20;
+  
   // The ideas is to compare the sum of the nearest neighbor distances for the locations of interest with the nearest neighbor distances of a uniformly distributed set.
 
     // 1) Generate a vector of uniformly distributed points in the search space, R.
@@ -155,6 +169,12 @@ float ALSA::calcHopkinsIndex(vector<Coordinate*> S, float max_x, float min_x, fl
     // 7) Values close to 1/2 are not clustered, values close to 1 are more clustered
 
     vector<Coordinate*> R;
+
+    // These will point to subsets of R and S of size n_points. The the sum of the min distances between
+    // the points in the these subsets and all the points in R and S will be U and W below.
+    vector<Coordinate*> S_subset;
+    vector<Coordinate*> R_subset;
+    
     
     double U = 0; // Running sum for uniformly distributed nearst neighbor distances
     double W = 0; // Running sim for observed inter-target distances
@@ -177,27 +197,34 @@ float ALSA::calcHopkinsIndex(vector<Coordinate*> S, float max_x, float min_x, fl
         R.push_back(c);
     }
 
+    // Populate R_subset and S_subset with n_points number of elements from R and S respectively
+    for (int i = 0; i < n_points; i++)
+      {
+	R_subset.push_back(R[rand()%R.size()]);
+	S_subset.push_back(S[rand()%S.size()]);
+      }
+    
     // Compare nearest neighbor distance sums for the uniform and observed distributions
     for (std::vector<Coordinate*>::iterator Sit = S.begin() ; Sit != S.end(); ++Sit)
     {
         double min_R_distance = std::numeric_limits<double>::max();
         double min_S_distance = std::numeric_limits<double>::max();
 
-        for (std::vector<Coordinate*>::iterator Rit = R.begin() ; Rit != R.end(); ++Rit)
+        for (std::vector<Coordinate*>::iterator R_subset_itr = R_subset.begin() ; R_subset_itr != R_subset.end(); ++R_subset_itr)
         {
-          double dist = (*Sit)->getDistance(*Rit);
-            if (dist < min_R_distance)
+          double dist = (*Sit)->getDistance(*R_subset_itr);
+	  if (dist < min_R_distance)
             {
-                min_R_distance = dist;
+	      min_R_distance = dist;
             }
         }
 
-        for (std::vector<Coordinate*>::iterator Sit2 = S.begin() ; Sit2 != S.end(); ++Sit2)
+        for (std::vector<Coordinate*>::iterator S_subset_itr = S_subset.begin() ; S_subset_itr != S_subset.end(); ++S_subset_itr)
         {
-          double dist = (*Sit)->getDistance(*Sit2);
-            if ((*Sit) != (*Sit2) && dist < min_S_distance)
+          double dist = (*Sit)->getDistance(*S_subset_itr);
+	  if ((*Sit) != (*S_subset_itr) && dist < min_S_distance)
             {
-                min_S_distance = dist;
+	      min_S_distance = dist;
             }
         }
 

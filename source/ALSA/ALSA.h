@@ -46,9 +46,10 @@ class ALSA
   float max_step_length; // Define the maximum step length to be 100 m
   float mu; // mu is the PDF inverse power law exponent
   float hopkins_index;
-  vector<TargetDetectionEvent> targets;
 
   float max_x, min_x, max_y, min_y;
+
+  vector<TargetDetectionEvent> targets;
 };
 
 #endif // End ALSA_h

@@ -144,14 +144,8 @@ void ALSA_controller::ControlStep()
 	{
 	  target_positions.push_back(new Coordinate(food_itr->GetX(), food_itr->GetY(), 0, 0));
 	}
-      const CVector3& cArenaSize = CSimulator::GetInstance().GetSpace().GetArenaSize();
-      float max_x = cArenaSize.GetX()/2.0;
-      float min_x = -cArenaSize.GetX()/2.0;
 
-      float max_y = cArenaSize.GetY()/2.0;
-      float min_y = -cArenaSize.GetY()/2.0;
-      
-      global_hopkins_index = alsa.calcHopkinsIndex( target_positions, max_x, min_x, max_y, min_y, 0, 0 );
+      global_hopkins_index = alsa.calcHopkinsIndex( target_positions );
       need_global_hopkins = false;
     }
    
@@ -193,19 +187,18 @@ void ALSA_controller::ControlStep()
 	  alsa.updateStrategy();
 	  
 	  // For the first robot 
-	  if (GetId().compare("ALSA_0") == 0)
-	    {
-	      float hopkins_index = alsa.getHopkinsIndex();
-	      float mu = alsa.getMu();
-
-	      argos::LOG << loopFunctions->Score() << ", " << hopkins_index << "("<< global_hopkins_index << ": " << 100*fabs(hopkins_index-global_hopkins_index)/global_hopkins_index <<"%)" << ", " << mu << std::endl;
-
-	      ofstream results_output_stream;
-	      results_output_stream.open(results_full_path, ios::app);
-	      
-	      results_output_stream << loopFunctions->Score() << ", " << hopkins_index << "("<< global_hopkins_index << ": " << 100*fabs(hopkins_index-global_hopkins_index)/global_hopkins_index <<"%)" << ", " << mu << std::endl;
-	      results_output_stream.close();
-	    }
+	  
+          float hopkins_index = alsa.getHopkinsIndex();
+          float mu = alsa.getMu();
+          
+          argos::LOG << "Robot " << GetId() << ": " << loopFunctions->Score() << ", " << hopkins_index << "("<< global_hopkins_index << ": " << 100*fabs(hopkins_index-global_hopkins_index)/global_hopkins_index <<"%)" << ", " << mu << std::endl;
+          
+          ofstream results_output_stream;
+          results_output_stream.open(results_full_path, ios::app);
+	  
+          results_output_stream << loopFunctions->Score() << ", " << hopkins_index << "("<< global_hopkins_index << ": " << 100*fabs(hopkins_index-global_hopkins_index)/global_hopkins_index <<"%)" << ", " << mu << std::endl;
+          results_output_stream.close();
+	  
 	}
       else // Continue searching
  	{
