@@ -13,7 +13,9 @@ ALSA_controller::ALSA_controller() :
     ResetReturnPosition(false),
     stopTimeStep(0),
     isHoldingFood(false)
-{}
+{
+  need_global_hopkins = true;
+}
 
 /*****
  * Initialize the controller via the XML configuration file. ARGoS typically
@@ -67,21 +69,19 @@ void ALSA_controller::Init(TConfigurationNode& node) {
     string results_file_name = ss.str();
    results_full_path = results_path+"/"+results_file_name;        
 
-
-   // Only the first robot should do this:
-
-if (GetId().compare("ALSA_0") == 0)
-  {
-   
-   // If the results directory specified by the user does not exist create it
-   boost::filesystem::path dir(results_path);
-   if(!(boost::filesystem::exists(results_path))) {
-     boost::filesystem::create_directory(results_path);
-   }
-   
-   ofstream results_output_stream;
-   results_output_stream.open(results_full_path, ios::app);
-   results_output_stream << "NumberOfRobots, "
+   // Only one (the first) robot should do this:
+   if (GetId().compare("ALSA_0") == 0)
+     {
+       
+       // If the results directory specified by the user does not exist create it
+       boost::filesystem::path dir(results_path);
+       if(!(boost::filesystem::exists(results_path))) {
+	 boost::filesystem::create_directory(results_path);
+       }
+       
+       ofstream results_output_stream;
+       results_output_stream.open(results_full_path, ios::app);
+       results_output_stream << "NumberOfRobots, "
 			 << "NumberOfSpirals, "
 			 << "TargetDistanceTolerance, "
 			 << "TargetAngleTolerance, "
@@ -101,6 +101,13 @@ if (GetId().compare("ALSA_0") == 0)
    results_output_stream.close();
   }
 
+ // Use the ALSA controller to select the initial goal location
+ pair<float, float> current_position = make_pair(previous_position.GetX(), previous_position.GetY()); 
+ 
+ GoalState goal_state = alsa.getNextGoalPosition( current_position );
+ SetTarget(CVector2(goal_state.x, goal_state.y));
+
+
  cout << "Finished Initializing the ALSA" << endl;
 }
 
@@ -111,6 +118,25 @@ if (GetId().compare("ALSA_0") == 0)
 void ALSA_controller::ControlStep() 
 {
   
+  // Expensive to do here... TODO: mark with a flag so only happens once
+  // cant do in init because loopFunctions may not have compeleted its init by then
+  // Calculate the Hopkins index for this distribution of targets
+  // 1) Extract coordinates from targets (food) list and store in target_positions
+ 
+  if (need_global_hopkins)
+    {
+      vector<Coordinate*> target_positions;
+      vector<CVector2> food_list = loopFunctions->FoodList;
+      for (std::vector<CVector2>::iterator food_itr = food_list.begin() ; food_itr != food_list.end(); ++food_itr)
+	{
+	  target_positions.push_back(new Coordinate(food_itr->GetX(), food_itr->GetY(), 0, 0));
+	}
+      
+      global_hopkins_index = alsa.calcHopkinsIndex( target_positions );
+      need_global_hopkins = false;
+    }
+   
+
   // To draw paths
   if (STATE == SEARCHING)
     {
@@ -131,25 +157,40 @@ void ALSA_controller::ControlStep()
     {
       SetIsHeadingToNest(false);
       
-      //  argos::LOG << "SEARCHING" << std::endl;
-      
       // SetHoldingFood checks if food can be picked up
       SetHoldingFood();
       if (IsHoldingFood())
 	{
-	  // Record the position of the food detected.
-	  alsa.addDetectedTarget(SimulationTick(), previous_position.GetX(), previous_position.GetY());
-	  // update the Hopkins index
-	  float H = alsa.calcHopkinsIndex();
-
 	  Stop(); // Stops the current movement
 	  STATE = RETURN_TO_NEST;
 	  SetIsHeadingToNest(true);
 	  SetTarget(loopFunctions->NestPosition);
 	  ReturnPosition = GetPosition();
+
+	  // Record the position of the food detected.
+	  alsa.addDetectedTarget(SimulationTick(), previous_position.GetX(), previous_position.GetY());
+	  
+	  // update the ALSA strategy
+	  alsa.updateStrategy();
+	  
+	  // For the first robot 
+	  if (GetId().compare("ALSA_0") == 0)
+	    {
+	      float hopkins_index = alsa.getHopkinsIndex();
+	      float mu = alsa.getMu();
+	      
+	      argos::LOG << loopFunctions->Score() << ", " << hopkins_index << "("<< global_hopkins_index << ": " << 100*fabs(hopkins_index-global_hopkins_index)/global_hopkins_index <<"%)" << ", " << mu << std::endl;
+
+	      ofstream results_output_stream;
+	      results_output_stream.open(results_full_path, ios::app);
+	      
+	      results_output_stream << loopFunctions->Score() << ", " << hopkins_index << ", " << mu << "\n";
+	      results_output_stream.close();
+	    }
 	}
       else // Continue searching
  	{
+	  
 	  if ( IsAtTarget() ) // Are we there yet? If so pick a new destination target
 	    {
 	      // Use the ALSA controller to select the next goal location
@@ -159,20 +200,12 @@ void ALSA_controller::ControlStep()
 	      GoalState goal_state = alsa.getNextGoalPosition( current_position );
 	      SetTarget(CVector2(goal_state.x, goal_state.y));
 
+	      float mu = alsa.getMu();
+	      float hopkins_index = alsa.getHopkinsIndex();
 	      float length = sqrt((current_position.first - goal_state.x)*(current_position.first - goal_state.x)+(current_position.second - goal_state.y)*(current_position.second - goal_state.y));
-	      
-	      // For the first robot
-		
-		if (GetId().compare("ALSA_0") == 0)
-		{
-		ofstream results_output_stream;
-		results_output_stream.open(results_full_path, ios::app);
-		
-		results_output_stream << goal_state.x << ", " << goal_state.y << ", " << alsa.previous_state.x << ", " << alsa.previous_state.y << ", " <<length <<"\n";
-		results_output_stream.close();
-		}
-		
+	     
 	    }
+	  //	  argos::LOG << "SEARCHING" << std::endl;
 	}
     }
   else if( STATE == RETURN_TO_NEST) 
@@ -211,7 +244,6 @@ void ALSA_controller::ControlStep()
     {
       // argos::LOG << "RETURN_TO_SEARCH" << std::endl;
       SetIsHeadingToNest(false);
-      
 
       //argos::LOG << "Return Position:" << ReturnPosition << endl;
       //argos::LOG << "Robot position:" << GetPosition() << endl;
@@ -224,8 +256,12 @@ void ALSA_controller::ControlStep()
 	{
 	  //argos::LOG << "RETURN_TO_SEARCH: Pattern Point" << std::endl;
 	  SetIsHeadingToNest(false);
-	  SetTarget(ReturnPosition);
+	  //SetTarget(ReturnPosition);
 	  STATE = SEARCHING;
+	}
+      else
+	{
+	  SetTarget(ReturnPosition);
 	}
     } 
   

@@ -71,6 +71,12 @@ class ALSA_controller : public BaseController {
 
 	// The ALSA search pattern generator
 	ALSA alsa;
+
+	// The Hopkins index calculated for the whole arena
+	// This is used as a point of comparison for tracking the online partial
+	// Hopkins index calculated by robots as they go.
+	float global_hopkins_index;
+	bool need_global_hopkins; // Flag so we only computer the global hopkins once
 };
 
 #endif /* ALSA_CONTROLLER_H */

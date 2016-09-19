@@ -7,7 +7,7 @@
 #include <utility>
 #include <tuple>
 #include <vector>
-#include "TargetDetectionEvent.h"
+#include "TargetDetectionEvent.h" // includes Coordinate.h
 
 using namespace std;
 
@@ -28,6 +28,7 @@ class ALSA
   float getMu();
   float getHopkinsIndex();
   float calcHopkinsIndex();
+  float calcHopkinsIndex(std::vector<Coordinate*> S);
   ~ALSA();
 
   GoalState previous_state;

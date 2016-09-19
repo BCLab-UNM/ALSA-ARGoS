@@ -1,0 +1,144 @@
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3plugin_simulator_qtopengl.so"
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3plugin_simulator_spiri.so"
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3plugin_simulator_epuck.so"
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3plugin_simulator_dynamics2d.so"
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3plugin_simulator_genericrobot.so"
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3plugin_simulator_pointmass3d.so"
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3plugin_simulator_eyebot.so"
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3plugin_simulator_entities.so"
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3plugin_simulator_footbot.so"
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3plugin_simulator_media.so"
+[INFO] Loaded library "/usr/local/lib/argos3/libargos3core_simulator.so"
+[INFO] Not using threads
+[INFO] Using random seed = 76740
+[INFO] Using simulation clock tick = 0.03125
+[INFO] Total experiment length in clock ticks = 57600
+[INFO] Loaded library "./build/source/ALSA/libALSA_controller.so"
+[INFO] Loaded library "./build/source/ALSA/libALSA_loop_functions.so"
+Finished Initializing the ALSA
+Finished Initializing the ALSA
+Finished Initializing the ALSA
+Finished Initializing the ALSA
+Finished Initializing the ALSA
+Finished Initializing the ALSA
+[INFO] The physics engine "dyn2d" will perform 10 iterations per tick (dt = 0.003125 sec)
+[INFO] No visualization selected.
+0, 1, -1.8
+0, 1, -1.8
+2, 1, -1.8
+2, 0.599747, -1.2
+4, 0.648393, -1.2
+4, 1, -1.8
+4, 0.636019, -1.2
+6, 1, -1.8
+7, 1, -1.8
+7, 0.721141, -1.2
+7, 0.790928, -1.2
+11, 0.559561, -1.2
+12, 0.370834, -1.2
+12, 0.648756, -1.2
+13, 0.469907, -1.2
+14, 0.811447, -1.2
+14, 0.373703, -1.2
+14, 0.684426, -1.2
+18, 0.596755, -1.2
+18, 0.486889, -1.2
+19, 0.161982, -1.2
+19, 0.655088, -1.2
+19, 0.104504, -1.2
+23, 0.61163, -1.2
+24, 0.626374, -1.2
+24, 0.204457, -1.2
+24, 0.483104, -1.2
+24, 0.589619, -1.2
+28, 0.645668, -1.2
+28, 0.382299, -1.2
+29, 0.509985, -1.2
+29, 0.507387, -1.2
+29, 0.127521, -1.2
+30, 0.513204, -1.2
+34, 0.383494, -1.2
+35, 0.298499, -1.2
+35, 0.0650917, -1.2
+35, 0.472114, -1.2
+35, 0.438641, -1.2
+36, 0.480761, -1.2
+36, 0.421142, -1.2
+39, 0.321558, -1.2
+42, 0.11953, -1.2
+42, 0.389007, -1.2
+42, 0.269171, -1.2
+43, 0.312232, -1.2
+43, 0.553066, -1.2
+46, 0.0833947, -1.2
+47, 0.378407, -1.2
+48, 0.48133, -1.2
+48, 0.521085, -1.2
+49, 0.431746, -1.2
+50, 0.198317, -1.2
+51, 0.395199, -1.2
+54, 0.334128, -1.2
+54, 0.262729, -1.2
+54, 0.379852, -1.2
+54, 0.465014, -1.2
+57, 0.285566, -1.2
+57, 0.554954, -1.2
+58, 0.527539, -1.2
+59, 0.352101, -1.2
+62, 0.427446, -1.2
+63, 0.340573, -1.2
+63, 0.479071, -1.2
+63, 0.396732, -1.2
+63, 0.219369, -1.2
+64, 0.42568, -1.2
+68, 0.474638, -1.2
+69, 0.367872, -1.2
+69, 0.317606, -1.2
+69, 0.4878, -1.2
+69, 0.567168, -1.2
+69, 0.214896, -1.2
+70, 0.482549, -1.2
+75, 0.453011, -1.2
+76, 0.293084, -1.2
+76, 0.486335, -1.2
+76, 0.443931, -1.2
+79, 0.458011, -1.2
+79, 0.460765, -1.2
+81, 0.362106, -1.2
+81, 0.355697, -1.2
+81, 0.400142, -1.2
+84, 0.198105, -1.2
+84, 0.550141, -1.2
+86, 0.46179, -1.2
+86, 0.472882, -1.2
+86, 0.326592, -1.2
+89, 0.357939, -1.2
+90, 0.46033, -1.2
+90, 0.488377, -1.2
+90, 0.192034, -1.2
+90, 0.414356, -1.2
+92, 0.360132, -1.2
+95, 0.400371, -1.2
+96, 0.407179, -1.2
+96, 0.497269, -1.2
+98, 0.389677, -1.2
+98, 0.331411, -1.2
+99, 0.238167, -1.2
+101, 0.479839, -1.2
+101, 0.493311, -1.2
+101, 0.492784, -1.2
+102, 0.321972, -1.2
+103, 0.258435, -1.2
+105, 0.433587, -1.2
+107, 0.399687, -1.2
+107, 0.373904, -1.2
+109, 0.369278, -1.2
+109, 0.317972, -1.2
+111, 0.305342, -1.2
+111, 0.550976, -1.2
+111, 0.358121, -1.2
+114, 0.421138, -1.2
+114, 0.249304, -1.2
+114, 0.515479, -1.2
+117, 0.35327, -1.2
+117, 0.344049, -1.2

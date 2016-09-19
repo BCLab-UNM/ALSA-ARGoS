@@ -59,7 +59,7 @@ void ALSA::updateStrategy()
   
   // Set mu given H
 
-  calcHopkinsIndex();
+  this->hopkins_index = calcHopkinsIndex();
   this->mu = mapHopkinsToMu(hopkins_index);
   
 }
@@ -67,9 +67,9 @@ void ALSA::updateStrategy()
 float ALSA::mapHopkinsToMu(float hopkins_index)
 {
   // Simple lookup of the "right" mu given the hopkins index (From Robotica)
-  if (hopkins_index > 0.95) return 1.7;
+  if (hopkins_index > 0.95) return -1.8;
 
-  return 1.4;
+  return -1.2;
 }
 
 float ALSA::calcHopkinsIndex()
@@ -102,7 +102,35 @@ float ALSA::calcHopkinsIndex()
       if ((**it).getZ() < min_z) min_z = (**it).getZ();
     }
   
-  this->hopkins_index = calcHopkinsIndex(target_positions, max_x, min_x, max_y, min_y, min_z, max_z);
+  // To do: calculate as the mean over n realizations of the uniform dist
+  float hopkins_index = calcHopkinsIndex(target_positions, max_x, min_x, max_y, min_y, min_z, max_z);
+
+  return hopkins_index;
+}
+
+// Convenience version of calcHopkins index that just takes a set of points.
+// Todo: refactor so this is the only version of calcHopkinsStatistic used
+float ALSA::calcHopkinsIndex(vector<Coordinate*> S)
+{
+  // Find the bounds of the targets seen so far.
+  float max_x = std::numeric_limits<double>::min();
+  float min_x = std::numeric_limits<double>::max();
+  float max_y = std::numeric_limits<double>::min();
+  float min_y = std::numeric_limits<double>::max();
+  float max_z = std::numeric_limits<double>::min();
+  float min_z = std::numeric_limits<double>::max();
+  
+  for (std::vector<Coordinate*>::iterator it = S.begin() ; it != S.end(); ++it)
+    {
+      if ((**it).getX() > max_x) max_x = (**it).getX();
+      if ((**it).getX() < min_x) min_x = (**it).getX();
+      if ((**it).getY() > max_y) max_y = (**it).getY();
+      if ((**it).getY() < min_y) min_y = (**it).getY();
+      if ((**it).getZ() > max_z) max_z = (**it).getZ();
+      if ((**it).getZ() < min_z) min_z = (**it).getZ();
+    }
+  
+  float hopkins_index = calcHopkinsIndex(S, max_x, min_x, max_y, min_y, min_z, max_z);
 
   return hopkins_index;
 }
