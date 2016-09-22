@@ -67,6 +67,9 @@ class ALSA_loop_functions : public argos::CLoopFunctions {
         argos::Real NestElevation;
         argos::Real SearchRadiusSquared;
 
+	argos::Real FoodBoundsWidth;
+	argos::Real FoodBoundsHeight;
+	
         /* list variables for food & pheromones */
         std::vector<argos::CVector2> FoodList;
 

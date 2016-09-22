@@ -46,6 +46,7 @@ class ALSA_controller : public BaseController {
         vector<CRay3>       myTrail;
         CColor              TrailColor;
 
+	Real                ProbTargetDetection;
 	Real                FoodDistanceTolerance;
        	CVector2            previous_position;
 	CVector2            previous_target;
@@ -80,6 +81,11 @@ class ALSA_controller : public BaseController {
 	// Hopkins index calculated by robots as they go.
 	float global_hopkins_index;
 	bool need_global_hopkins; // Flag so we only computer the global hopkins once
+
+	Real FoodBoundsXMin;
+	Real FoodBoundsXMax;
+	Real FoodBoundsYMin;
+	Real FoodBoundsYMax;
 };
 
 #endif /* ALSA_CONTROLLER_H */

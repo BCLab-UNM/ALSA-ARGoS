@@ -90,6 +90,7 @@ void ALSA_qt_user_functions::DrawFood() {
 
 void ALSA_qt_user_functions::DrawTargetRays() {
 
+  return;
 	//size_t tick = loopFunctions.GetSpace().GetSimulationClock();
 	//size_t tock = loopFunctions.GetSimulator().GetPhysicsEngine("default").GetInverseSimulationClockTick() / 8;
 

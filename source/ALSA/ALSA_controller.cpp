@@ -41,6 +41,7 @@ void ALSA_controller::Init(TConfigurationNode& node) {
     argos::GetNodeAttribute(settings, "ResultsDirectoryPath",      results_path);
     argos::GetNodeAttribute(settings, "DestinationNoiseStdev",      DestinationNoiseStdev);
     argos::GetNodeAttribute(settings, "PositionNoiseStdev",      PositionNoiseStdev);
+    argos::GetNodeAttribute(settings, "ProbTargetDetection",      ProbTargetDetection);
     FoodDistanceTolerance *= FoodDistanceTolerance;
 
     argos::CVector2 p(GetPosition());
@@ -68,18 +69,7 @@ void ALSA_controller::Init(TConfigurationNode& node) {
     string results_file_name = ss.str();
    results_full_path = results_path+"/"+results_file_name;        
 
-   // Set the arena size for ALSA
-   const CVector3& cArenaSize = CSimulator::GetInstance().GetSpace().GetArenaSize();
-   float max_x = cArenaSize.GetX()/2.0;
-   float min_x = -cArenaSize.GetX()/2.0;
    
-   float max_y = cArenaSize.GetY()/2.0;
-   float min_y = -cArenaSize.GetY()/2.0;
-
-   alsa.setMaxX(  max_x );
-   alsa.setMinX(  min_x );
-   alsa.setMaxY(  max_y );
-   alsa.setMinY(  min_y );
 
    alsa.setMu(LevyExponent);
    
@@ -139,6 +129,18 @@ void ALSA_controller::ControlStep()
  
   if (need_global_hopkins)
     {
+      // Set the arena size for ALSA
+      float max_x = loopFunctions->FoodBoundsWidth/2.0;
+      float min_x = -loopFunctions->FoodBoundsWidth/2.0;
+      
+      float max_y = loopFunctions->FoodBoundsHeight/2.0;
+      float min_y = -loopFunctions->FoodBoundsHeight/2.0;
+      
+      alsa.setMaxX(  max_x );
+      alsa.setMinX(  min_x );
+      alsa.setMaxY(  max_y );
+      alsa.setMinY(  min_y );
+      
       vector<Coordinate*> target_positions;
       vector<CVector2> food_list = loopFunctions->FoodList;
       for (std::vector<CVector2>::iterator food_itr = food_list.begin() ; food_itr != food_list.end(); ++food_itr)
@@ -306,6 +308,8 @@ void ALSA_controller::ControlStep()
 void ALSA_controller::SetHoldingFood(){
     if(IsHoldingFood() == false) 
       {
+	if(rand()*1.0/RAND_MAX < ProbTargetDetection) {
+	
         vector <CVector2> newFoodList; 
         size_t i = 0;
         for (i = 0; i < loopFunctions->FoodList.size(); i++)
@@ -321,7 +325,7 @@ void ALSA_controller::SetHoldingFood(){
         } 
         loopFunctions->FoodList = newFoodList;
       }
-
+      }
 }
 
 /*****

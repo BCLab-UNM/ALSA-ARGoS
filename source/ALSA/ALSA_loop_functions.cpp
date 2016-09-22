@@ -37,18 +37,20 @@ void ALSA_loop_functions::Init(TConfigurationNode& node) {
 CSimulator     *simulator     = &GetSimulator();
   CPhysicsEngine *physicsEngine = &simulator->GetPhysicsEngine("dyn2d");
   ticks_per_second = physicsEngine->GetInverseSimulationClockTick();
- argos::TConfigurationNode ALSA_node = argos::GetNode(node, "DALSA");
+ argos::TConfigurationNode ALSA_node = argos::GetNode(node, "ALSA");
  argos::GetNodeAttribute(ALSA_node, "PrintFinalScore",                   PrintFinalScore);
  argos::GetNodeAttribute(ALSA_node, "FoodDistribution",                  FoodDistribution);
  argos::GetNodeAttribute(ALSA_node, "FoodItemCount",                  FoodItemCount);
  argos::GetNodeAttribute(ALSA_node, "NestRadius",                 NestRadius);
-
+ argos::GetNodeAttribute(ALSA_node, "FoodBoundsWidth",                 FoodBoundsWidth);
+ argos::GetNodeAttribute(ALSA_node, "FoodBoundsHeight",                 FoodBoundsHeight);
+ 
  NestRadiusSquared = NestRadius*NestRadius;
 
     // calculate the forage range and compensate for the robot's radius of 0.085m
     argos::CVector3 ArenaSize = GetSpace().GetArenaSize();
-    argos::Real rangeX = (ArenaSize.GetX() / 2.0) - 0.085;
-    argos::Real rangeY = (ArenaSize.GetY() / 2.0) - 0.085;
+    argos::Real rangeX = FoodBoundsWidth/2.0;//(ArenaSize.GetX() / 2.0) - 0.085;
+    argos::Real rangeY = FoodBoundsHeight/2.0;//(ArenaSize.GetY() / 2.0) - 0.085;
     ForageRangeX.Set(-rangeX, rangeX);
     ForageRangeY.Set(-rangeY, rangeY);
 
