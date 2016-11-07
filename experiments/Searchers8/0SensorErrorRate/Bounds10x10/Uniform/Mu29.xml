@@ -45,7 +45,7 @@
       <params>
 
 	<!-- Modify TargetDistanceTolerance to Simulate Error -->
-        <settings ProbTargetDetection = "1.0"   
+        <settings ProbTargetDetection = "0.0146"   
                   
                   NestDistanceTolerance = "0.01"  
                   NestAngleTolerance = "0.05"  
