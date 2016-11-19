@@ -8,7 +8,7 @@
 cd build
 
 echo "Configuring Makefiles with CMAKE..."
-cmake ..
+cmake -DCMAKE_BUILD_TYPE=Release ..
 
 echo "Making code..."
 make

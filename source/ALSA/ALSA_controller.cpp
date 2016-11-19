@@ -121,6 +121,12 @@ void ALSA_controller::Init(TConfigurationNode& node) {
  *****/
 void ALSA_controller::ControlStep() 
 {
+
+  // Print the time 10 simulated minutes
+
+
+  if (GetId().compare("ALSA_0") == 0)
+    if (((int)loopFunctions->getSimTimeInSeconds()) % 600 == 0 && SimulationTick() % 32 == 0) cout <<  GetId() << ": " << (loopFunctions->getSimTimeInSeconds() / (1.0f*86400)) * 100 << "% complete. Sim Minutes: " << (int)loopFunctions->getSimTimeInSeconds()/60 << endl;
   
   // Expensive to do here... TODO: mark with a flag so only happens once
   // cant do in init because loopFunctions may not have compeleted its init by then
