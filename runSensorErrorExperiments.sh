@@ -6,7 +6,7 @@
 
 for i in 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30
 do
-    for j in 0 0125 025 0375 05 0625 075 0875 1
+    for j in 0 #0125 025 0375 05 0625 075 0875 1
     do
 	echo "/Users/matthew/ownCloud/Data/Robots/ALSA/results/Searchers8/${j}SensorErrorRate/Bounds40x40/PowerLaw/Mu${i}"
 	mkdir -p /Users/matthew/ownCloud/Data/Robots/ALSA/results/Searchers8/${j}SensorErrorRate/Bounds40x40/PowerLaw/

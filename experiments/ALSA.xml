@@ -45,7 +45,7 @@
       <params>
 
 	<!-- Modify TargetDistanceTolerance to Simulate Error -->
-        <settings ProbTargetDetection = "0.01"   
+        <settings ProbTargetDetection = "1.0"   
                   
                   NestDistanceTolerance = "0.01"  
                   NestAngleTolerance = "0.05"  
@@ -114,14 +114,14 @@
   <!-- * Visualization * -->
   <!-- ****************** -->
   <visualization>
-
+<!--
     <qt-opengl>
       <camera>
         <placement idx="0" position="  0, 0, 10" look_at="0, 0, 0" lens_focal_length="25"/>
       </camera>
       <user_functions label="ALSA_qt_user_functions"/>
-    </qt-opengl>
- 
+      </qt-opengl>
+-->
   </visualization>
 
 </argos-configuration>
